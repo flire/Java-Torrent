@@ -14,7 +14,7 @@ public class FullFile extends TorrentFile {
         this.size = file.length();
         this.name = name;
         this.baseDirectory = baseDirectory;
-        this.partitioning = new FilePartitioning(numberOfParts, false);
+        this.partitioning = new PartialFileAvailability(numberOfParts, true);
         file.setLength(size);
     }
 

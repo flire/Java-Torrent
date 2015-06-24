@@ -19,5 +19,6 @@ public class Main {
         if (d.getServerConnection() != null) {
             System.out.println("OK!");
         }
+        ClientForm cf = new ClientForm();
     }
 }

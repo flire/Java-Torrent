@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -12,7 +11,7 @@ public class PartedFile extends TorrentFile {
         this.size = size;
         this.name = name;
         this.baseDirectory = baseDirectory;
-        this.partitioning = new FilePartitioning(numberOfParts, false);
+        this.partitioning = new PartialFileAvailability(numberOfParts, false);
         file = new RandomAccessFile(fullFilename(),"rw");
         file.setLength(size);
     }

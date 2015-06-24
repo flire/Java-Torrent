@@ -10,7 +10,7 @@ abstract public class TorrentFile {
     protected long size;
     protected String name;
     protected String baseDirectory;
-    protected FilePartitioning partitioning;
+    protected PartialFileAvailability partitioning;
     protected RandomAccessFile file;
 
     public String getHash() {

@@ -18,7 +18,7 @@ public class LoginDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 ip = textField1.getText();
                 try {
-                    connection = new ServerConnection(ip);
+//                    connection = new ServerConnection(ip);
                     setVisible(false);
                     dispose();
                 } catch (Exception ex) {
