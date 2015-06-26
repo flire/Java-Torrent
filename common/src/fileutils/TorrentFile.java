@@ -1,3 +1,5 @@
+package fileutils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -8,6 +10,7 @@ import java.io.RandomAccessFile;
 abstract public class TorrentFile {
     protected String hash;
     protected long size;
+    protected int numberOfParts;
     protected String name;
     protected String baseDirectory;
     protected PartialFileAvailability partitioning;
@@ -33,7 +36,6 @@ abstract public class TorrentFile {
     }
 
     protected long getPartSize(int partNumber) {
-        int numberOfParts = partitioning.getNumberOfParts();
         long result = size / numberOfParts;
         if (partNumber == numberOfParts -1) { //lastPart
             result += size % numberOfParts;
@@ -48,6 +50,6 @@ abstract public class TorrentFile {
         return result;
     }
 
-    abstract public void setPart(int partNumber, byte[] part) throws IOException; //TODO:remove this method
+    abstract public float getPercentage();
 
 }

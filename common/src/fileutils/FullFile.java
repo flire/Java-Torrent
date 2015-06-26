@@ -1,3 +1,5 @@
+package fileutils;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -46,7 +48,7 @@ public class FullFile extends TorrentFile {
     }
 
     @Override
-    public void setPart(int partNumber, byte[] part) throws IOException {
-        //TODO: remove this method
+    public float getPercentage() {
+        return 1.0f;
     }
 }

@@ -1,3 +1,5 @@
+package fileutils;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -11,12 +13,12 @@ public class PartedFile extends TorrentFile {
         this.size = size;
         this.name = name;
         this.baseDirectory = baseDirectory;
+        this.numberOfParts = numberOfParts;
         this.partitioning = new PartialFileAvailability(numberOfParts, false);
         file = new RandomAccessFile(fullFilename(),"rw");
         file.setLength(size);
     }
 
-    @Override
     public void setPart(int partNumber, byte[] part) throws IOException {
         file.write(part, (int)getOffset(partNumber), (int)getPartSize(partNumber));
         partitioning.setPartAvailable(partNumber);
@@ -25,5 +27,16 @@ public class PartedFile extends TorrentFile {
     @Override
     protected String fullFilename() {
         return super.fullFilename()+".part";
+    }
+
+    @Override
+    public float getPercentage() {
+        int counter = 0;
+        for (int i = 0; i < numberOfParts;i++) {
+            if (isPartAvailable(i)) {
+                counter++;
+            }
+        }
+        return (float)counter / numberOfParts;
     }
 }

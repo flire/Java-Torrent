@@ -1,7 +1,11 @@
+package fileutils;
+
+import java.io.Serializable;
+
 /**
  * Created by Dmitry Tishchenko on 23.06.15.
  */
-public class FileDescription {
+public class FileDescription implements Serializable {
     public final String hash;
     public final long size;
     public final String filename;

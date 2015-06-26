@@ -1,7 +1,10 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+package data;
+
+import fileutils.FileAvailability;
+import fileutils.FileDescription;
+import fileutils.PartialFileAvailability;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -42,12 +45,20 @@ public class FileIndex {
             return holders[0]; //TODO:random
         }
 
-        public void deregister(UUID holder) {
-
+        public boolean deregister(UUID holder) {
+            boolean removeFile = true;
+            for (Set<UUID> partHolders: partsHolders) {
+                partHolders.remove(holder);
+                if (!partHolders.isEmpty()) {
+                    removeFile = false;
+                }
+            }
+            return removeFile;
         }
 
         public void registerPart(UUID holder, int filePart) {
-
+            Set<UUID> partHolders = partsHolders[filePart];
+            partHolders.add(holder);
         }
     }
     private ConcurrentHashMap<String, FileHolders> filesAvailability;
@@ -56,6 +67,16 @@ public class FileIndex {
     public FileIndex() {
         filesAvailability = new ConcurrentHashMap<>();
         filesIndex = new ConcurrentHashMap<>();
+    }
+
+    public void registerFiles(UUID holder, FileDescription files[]) {
+        for (FileDescription fd: files) {
+            if (fd.fileAvailability.isFileAvailable()) {
+                registerFile(holder, fd);
+            } else {
+                deleteHolder(holder, fd.hash);
+            }
+        }
     }
 
     public void registerFile(UUID holder, FileDescription description) { //can process both startSeeding and registerFile
@@ -71,12 +92,27 @@ public class FileIndex {
         return filesAvailability.get(hash).getAvailability();
     }
 
-    public void addHolder(UUID holder, String hash) {
-
+    public void deleteHolder(UUID holder, String hash) {
+        FileHolders partsHolders = filesAvailability.get(hash);
+        boolean removeFile = partsHolders.deregister(holder);
+        if (removeFile) {
+            filesAvailability.remove(hash);
+            filesIndex.remove(hash);
+        }
     }
 
-    public void deleteHolder(UUID holder, String hash) {
-
+    public void deleteHolderFromEverywhere(UUID holder) {
+        ArrayList<String> hashesToDelete = new ArrayList<>();
+        for (Map.Entry<String, FileHolders> fileHolders: filesAvailability.entrySet()) {
+            boolean hashToDelete = fileHolders.getValue().deregister(holder);
+            if (hashToDelete) {
+                hashesToDelete.add(fileHolders.getKey());
+            }
+        }
+        for (String hash: hashesToDelete) {
+            filesAvailability.remove(hash);
+            filesIndex.remove(hash);
+        }
     }
 
     public UUID getRandomHolder(String hash, int filePart) {
@@ -87,5 +123,10 @@ public class FileIndex {
         FileDescription result[] = new FileDescription[filesIndex.size()];
         filesIndex.values().toArray(result);
         return result;
+    }
+
+    public void updatePart(UUID holder, String hash, int part) {
+        FileHolders holders = filesAvailability.get(hash);
+        holders.registerPart(holder, part);
     }
 }

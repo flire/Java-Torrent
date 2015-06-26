@@ -1,3 +1,5 @@
+package fileutils;
+
 import java.util.Arrays;
 
 /**
@@ -18,17 +20,28 @@ public class PartialFileAvailability implements FileAvailability {
     public boolean isPartAvailable(int partNumber) {
         return availability[partNumber]; //TODO:check index!
     }
+
+    @Override
+    public boolean isFileAvailable() {
+        for (boolean isPartAvailable: availability) {
+            if (isPartAvailable) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setPartAvailable(int partNumber) {
         availability[partNumber] = true; //TODO:check index!
     }
 
-    public float getPercentage() {
-        int counter = 0;
-        for (boolean isPartAvailable: availability) {
-            if (isPartAvailable) {
-                counter++;
-            }
-        }
-        return (float)counter / numberOfParts;
-    }
+//    public float getPercentage() {
+//        int counter = 0;
+//        for (boolean isPartAvailable: availability) {
+//            if (isPartAvailable) {
+//                counter++;
+//            }
+//        }
+//        return (float)counter / numberOfParts;
+//    }
 }

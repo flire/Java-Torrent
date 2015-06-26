@@ -1,3 +1,5 @@
+package fileutils;
+
 /**
  * Created by Dmitry Tishchenko on 23.06.15.
  */
@@ -8,7 +10,7 @@ public class CompleteFileAvailability implements FileAvailability {
     }
 
     @Override
-    public float getPercentage() {
-        return 1.0f;
+    public boolean isFileAvailable() {
+        return true;
     }
 }
